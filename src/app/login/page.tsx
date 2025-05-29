@@ -1,5 +1,6 @@
 'use client';
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 
 type FieldName = 'name' | 'email' | 'age' | 'password';
 
@@ -9,7 +10,8 @@ interface Field {
   type: string;
 }
 
-export default function Home() {
+export default function Login() {
+  const navigate = useNavigate();
   const content: Field[] = [
     { name: "name", placeholder: "Name", type: "text" },
     { name: "email", placeholder: "Email", type: "email" },
@@ -32,29 +34,36 @@ export default function Home() {
     }));
   }
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
     try {
-      const response = await fetch('http://localhost:5000/register', {
+      const res = await fetch('http://localhost:5000/authenticate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
-      if (response.ok) {
-        alert(data.message);
+      const result = await res.json();
+
+      if (res.ok && result.token) {
+        localStorage.setItem('token', result.token);
+        alert(result.message || 'Login successful');
+        navigate('/dashboard');
       } else {
-        alert(data.error);
+        alert(result.message || 'Login failed');
       }
-    } catch (err) {
-      console.error('Error submitting form:', err);
+    } catch (error) {
+      console.error("Error sending request:", error);
+      alert('Something went wrong');
     }
-  };
+  }
 
   return (
     <div>
-      <h2>Register</h2>
+      <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         {content.map((field, index) => (
           <div key={index}>
