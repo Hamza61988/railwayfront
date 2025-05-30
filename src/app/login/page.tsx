@@ -1,6 +1,6 @@
 'use client';
 import { useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 
 type FieldName = 'name' | 'email' | 'age' | 'password';
 
@@ -11,7 +11,8 @@ interface Field {
 }
 
 export default function Login() {
-  const navigate = useNavigate();
+  const router = useRouter();
+
   const content: Field[] = [
     { name: "name", placeholder: "Name", type: "text" },
     { name: "email", placeholder: "Email", type: "email" },
@@ -28,21 +29,15 @@ export default function Login() {
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-
     try {
-      const res = await fetch('http://localhost:5000/authenticate', {
+      const res = await fetch('https://mongorailwaytry-production.up.railway.app/authenticate', {
         method: 'POST',
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
@@ -50,13 +45,14 @@ export default function Login() {
 
       if (res.ok && result.token) {
         localStorage.setItem('token', result.token);
+        localStorage.setItem('name', formData.name);
         alert(result.message || 'Login successful');
-        navigate('/dashboard');
+        router.push('/Dashboard'); 
       } else {
         alert(result.message || 'Login failed');
       }
     } catch (error) {
-      console.error("Error sending request:", error);
+      console.error("Error:", error);
       alert('Something went wrong');
     }
   }

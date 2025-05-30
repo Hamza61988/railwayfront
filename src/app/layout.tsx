@@ -1,16 +1,14 @@
-import "./globals.css";
-import RouterWrapper from "../componenet/RouterWrapper";
+import './globals.css';
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export const metadata = {
+  title: 'Next Auth App',
+  description: 'Register/Login and Protected Dashboard',
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>
-        <RouterWrapper />
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
