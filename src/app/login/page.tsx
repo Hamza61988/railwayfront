@@ -58,23 +58,31 @@ export default function Login() {
   }
 
   return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        {content.map((field, index) => (
-          <div key={index}>
-            <input
-              type={field.type}
-              name={field.name}
-              placeholder={field.placeholder}
-              value={formData[field.name]}
-              onChange={handleChange}
-              required
-            />
-          </div>
-        ))}
-        <button type="submit">Submit</button>
-      </form>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Login</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {content.map((field, index) => (
+            <div key={index}>
+              <input
+                type={field.type}
+                name={field.name}
+                placeholder={field.placeholder}
+                value={formData[field.name]}
+                onChange={handleChange}
+                required
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          ))}
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200"
+          >
+            Submit
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
