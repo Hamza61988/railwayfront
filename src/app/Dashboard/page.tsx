@@ -98,57 +98,78 @@ export default function Dashboard() {
   if (!authorized) return null;
 
   return (
-    <div className="p-6 max-w-xl mx-auto">
-      <h2 className="text-xl font-bold mb-2">Private Messaging</h2>
-      <p className="text-sm text-gray-500 mb-4">Your Socket ID: {myId}</p>
+   
+  <div className="flex h-screen">
+    {/* Sidebar - Users */}
+    <aside className="w-64 bg-white border-r p-4 overflow-y-auto">
+      <h2 className="text-xl font-bold mb-4">Chats</h2>
+      <ul>
+        {onlineUsers.length === 0 ? (
+          <li className="text-gray-500">No users online</li>
+        ) : (
+          onlineUsers.map((user) => (
+            <li
+              key={user}
+              className={`px-4 py-2 rounded mb-2 cursor-pointer hover:bg-blue-100 ${
+                user === targetName ? 'bg-blue-200 font-semibold' : ''
+              } ${user === localStorage.getItem('name') ? 'text-blue-500 font-bold' : ''}`}
+              onClick={() => setTargetName(user)}
+            >
+              {user}
+            </li>
+          ))
+        )}
+      </ul>
+    </aside>
 
-      <div className="mb-4">
-        <h3 className="font-semibold mb-1">Online Users</h3>
-        <ul className="border p-2 rounded bg-white max-h-32 overflow-auto">
-          {onlineUsers.length === 0 ? (
-            <li className="text-gray-500">No users online</li>
-          ) : (
-            onlineUsers.map((user) => (
-              <li
-                key={user}
-                className={`cursor-pointer px-2 py-1 rounded hover:bg-gray-200 ${
-                  user === localStorage.getItem('name') ? 'font-bold text-blue-600' : ''
-                }`}
-                onClick={() => setTargetName(user)}
-              >
-                {user}
-              </li>
-            ))
-          )}
-        </ul>
+    {/* Chat Area */}
+    <main className="flex-1 flex flex-col">
+      {/* Header */}
+      <div className="px-6 py-4 border-b bg-gray-100">
+        <h2 className="text-lg font-semibold">
+          {targetName ? `Chatting with ${targetName}` : 'Select a user to start chatting'}
+        </h2>
+        <p className="text-sm text-gray-500">Your ID: {myId}</p>
       </div>
 
-      <div className="mb-2">
-        <input
-          className="w-full px-3 py-2 border rounded mb-2"
-          placeholder="Target User Name"
-          value={targetName}
-          onChange={(e) => setTargetName(e.target.value)}
-        />
-        <input
-          className="w-full px-3 py-2 border rounded"
-          placeholder="Enter private message"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
-        <button
-          onClick={handleSend}
-          className="mt-2 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-        >
-          Send Private Message
-        </button>
+      {/* Message history */}
+      <div className="flex-1 overflow-y-auto px-6 py-4 bg-gray-50 space-y-2">
+        {messages.map((msg, i) => {
+          const isMine = msg.startsWith('To');
+          return (
+            <div
+              key={i}
+              className={`max-w-xs px-4 py-2 rounded-lg ${
+                isMine
+                  ? 'ml-auto bg-blue-500 text-white text-right'
+                  : 'mr-auto bg-gray-200 text-black'
+              }`}
+            >
+              {msg.replace(/^To |^From /, '')}
+            </div>
+          );
+        })}
       </div>
 
-      <div className="mt-4 border p-3 h-48 overflow-y-auto bg-gray-100 rounded">
-        {messages.map((msg, i) => (
-          <div key={i} className="text-sm mb-1">{msg}</div>
-        ))}
+      {/* Message input */}
+      <div className="border-t p-4 bg-white">
+        <div className="flex space-x-2">
+          <input
+            className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            placeholder="Type a message..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          />
+          <button
+            onClick={handleSend}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+          >
+            Send
+          </button>
+        </div>
       </div>
-    </div>
-  );
+    </main>
+  </div>
+)
+
 }
