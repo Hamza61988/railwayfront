@@ -44,10 +44,7 @@ export default function Dashboard() {
     const newSocket = io('https://mongorailwaytry-production.up.railway.app');
 
     newSocket.on('connect', () => {
-      if(newSocket.id){
-         setMyId(newSocket.id);
-      }
-     
+      if (newSocket.id) setMyId(newSocket.id);
       const name = localStorage.getItem('name');
       if (name) {
         newSocket.emit('register-name', name);
@@ -70,6 +67,22 @@ export default function Dashboard() {
     };
   }, [authorized]);
 
+  // ✅ Fetch message history when target changes
+  useEffect(() => {
+    if (targetName) {
+      fetch(`https://mongorailwaytry-production.up.railway.app/messages/${localStorage.getItem('name')}/${targetName}`)
+        .then(res => res.json())
+        .then(data => {
+          const formatted = data.map((m: any) =>
+            m.from === localStorage.getItem('name')
+              ? `To ${m.to}: ${m.message}`
+              : `From ${m.from}: ${m.message}`
+          );
+          setMessages(formatted);
+        });
+    }
+  }, [targetName]);
+
   const handleSend = () => {
     if (!socket) return;
     const trimmed = message.trim();
@@ -89,7 +102,6 @@ export default function Dashboard() {
       <h2 className="text-xl font-bold mb-2">Private Messaging</h2>
       <p className="text-sm text-gray-500 mb-4">Your Socket ID: {myId}</p>
 
-      
       <div className="mb-4">
         <h3 className="font-semibold mb-1">Online Users</h3>
         <ul className="border p-2 rounded bg-white max-h-32 overflow-auto">
@@ -111,7 +123,6 @@ export default function Dashboard() {
         </ul>
       </div>
 
-    
       <div className="mb-2">
         <input
           className="w-full px-3 py-2 border rounded mb-2"
@@ -133,7 +144,6 @@ export default function Dashboard() {
         </button>
       </div>
 
-    
       <div className="mt-4 border p-3 h-48 overflow-y-auto bg-gray-100 rounded">
         {messages.map((msg, i) => (
           <div key={i} className="text-sm mb-1">{msg}</div>
