@@ -166,7 +166,8 @@ export default function Dashboard() {
                     ? 'ml-auto bg-blue-500 text-white text-right'
                     : 'mr-auto bg-gray-200 text-black'
                 }`}>
-                  {msg.text.replace(/^To |^From /, '')}
+                  {msg.text.replace(/^(To|From) [^:]+: /, '')}
+
                 </div>
              
               </div>
