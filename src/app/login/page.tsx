@@ -15,8 +15,6 @@ export default function Login() {
 
   const content: Field[] = [
     { name: "name", placeholder: "Name", type: "text" },
-    { name: "email", placeholder: "Email", type: "email" },
-    { name: "age", placeholder: "Age", type: "number" },
     { name: "password", placeholder: "Password", type: "password" },
   ];
 
